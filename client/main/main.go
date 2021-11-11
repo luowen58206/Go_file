@@ -1,12 +1,13 @@
 package main
 
 import (
-	"example.com/m/client"
+	"example.com/m/client/processes"
 	"fmt"
 )
 
-var userID string
+var userId string
 var userPwd string
+var userName string
 
 func main()  {
 	ShowIu()
@@ -17,9 +18,9 @@ func ShowIu()  {
 	var key int
 
 	//判断是否继续显示菜单
-	var loop = true
+	//var loop = true
 
-	for loop {
+	for true {
 		fmt.Println("------Welcome to log in to the chat system------")
 		fmt.Println("\t\t\t 1: log in system")
 		fmt.Println("\t\t\t 2: register")
@@ -32,28 +33,33 @@ func ShowIu()  {
 		switch key {
 		case 1:
 			fmt.Println("Login to chat system")
-			loop = false
+			fmt.Print("please input userID:")
+			fmt.Scanf("%s\n",&userId)
+			fmt.Print("please input userPwd:")
+			fmt.Scanf("%s\n",&userPwd)
+
+			// 完成登录
+			//创建一个UserProcess
+			up := &processes.UserProcess{}
+			up.Login(userId,userPwd)
 		case 2:
 			fmt.Println("register new user")
-			loop = false
+			fmt.Print("please input a new userId:")
+			fmt.Scanf("%s\n",&userId)
+			fmt.Print("please input a new password:")
+			fmt.Scanf("%s\n",&userPwd)
+			fmt.Print("please input a new name:")
+			fmt.Scanf("%s\n",&userName)
+
+			//调用实例完成注册请求
+			up := &processes.UserProcess{}
+			up.Register(userId,userPwd,userName)
+			//loop = false
 		case 3:
 			fmt.Println("Bye to chat system")
-			loop = false
+			//loop = false
 		default:
 			fmt.Println("Please input a current num")
 		}
-	}
-	//根据用户的输入 来设置不同的二级菜单的功能
-	if key == 1{
-	  //说明用户要登陆
-		fmt.Print("please input userID:")
-		fmt.Scanf("%s\n",&userID)
-		fmt.Print("please input userPwd:")
-		fmt.Scanf("%s\n",&userPwd)
-		//先把登陆的函数写到另外的文件里面 如login，go
-		client.Login(userID, userPwd)
-
-	}else {
-
 	}
 }

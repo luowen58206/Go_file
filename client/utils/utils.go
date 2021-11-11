@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"example.com/m/common/message"
 	"fmt"
 	"net"
@@ -17,7 +18,6 @@ type Transfer struct {
 func (this *Transfer)ReadPkg() (mes message.Message,err error)  {
 	fmt.Println("conn start read ")
 	//在conn没有被关闭的情况下 才会阻塞
-	//如果客户端关闭了 conn 就不会阻塞
 	_,err = this.Conn.Read(this.Buf[:4])
 	if  err != nil {
 		//err = errors.New("read pakLen fail error")
@@ -35,10 +35,10 @@ func (this *Transfer)ReadPkg() (mes message.Message,err error)  {
 		return
 	}
 
-	//反序列化 -》 message Message类型
+	//反序列化 -》 message。Message类型
 	err =json.Unmarshal(this.Buf[:pkgLen],&mes)
 	if err != nil {
-		//err = errors.New("dataJson unMarshal error")
+		err = errors.New("dataJson unMarshal error")
 		return
 	}
 	return
@@ -67,3 +67,4 @@ func (this *Transfer)WritePkg(data []byte) (err error) {
 	}
 	return
 }
+

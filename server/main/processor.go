@@ -6,7 +6,6 @@ import (
 	"example.com/m/server/utils"
 	"fmt"
 	"io"
-	"log"
 	"net"
 )
 
@@ -25,7 +24,10 @@ func (this *Processor) ServerProcessMes(mes *message.Message) (err error)  {
 		}
 		err = up.ServerProcessLogin(mes)
 	case message.RegisterMesType:
-
+		up := &processes.UserProcess{
+			Conn: this.Conn,
+		}
+		err = up.ServerProcessRegister(mes)
 	default:
 		fmt.Println("info Type not exist cont deal")
 	}
@@ -35,7 +37,7 @@ func (this *Processor) ServerProcessMes(mes *message.Message) (err error)  {
 func (this *Processor) Process02 () (err error) {
 
 	for  {
-		var tf = utils.Transfer{
+		var tf = &utils.Transfer{
 			Conn: this.Conn,
 		}
 		mes,err := tf.ReadPkg()
@@ -44,11 +46,10 @@ func (this *Processor) Process02 () (err error) {
 				fmt.Println("client exit server exit")
 				return err
 			}else {
-				log.Fatalln("readPkg fail err = ", err)
+				fmt.Println("readPkg fail err = ", err)
 				return err
 			}
 		}
-		//fmt.Println("mess = ",mes)
 		err = this.ServerProcessMes(&mes)
 		if err != nil {
 			return err
